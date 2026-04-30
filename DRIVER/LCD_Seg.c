@@ -260,6 +260,9 @@
 #define __T1_BIT__ 1
 #define __T2_BIT__ 0
 
+int8 xdata __LCD_CurrentNumDisplayed[13] = {-1, -1, -1, -1, -1, -1, -1,
+                                            -1, -1, -1, -1, -1, -1};
+
 void LCD_Config()
 {
     /**
@@ -311,6 +314,114 @@ void LCD_Config()
      */
     LCDCR = 0x01;  // Enable LCD
 }
+const u8 code __LCD_DT_NUM_LOOKUP[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d,
+                                       0x7d, 0x07, 0x7f, 0x6f, 0x00, 0x40};
+const u8 code __LCD_DT_ADDR_LOOKUP[13][8][2] = {
+    {{__1A_ADDR__, __1A_BIT__},
+     {__1B_ADDR__, __1B_BIT__},
+     {__1C_ADDR__, __1C_BIT__},
+     {__1D_ADDR__, __1D_BIT__},
+     {__1E_ADDR__, __1E_BIT__},
+     {__1F_ADDR__, __1F_BIT__},
+     {__1G_ADDR__, __1G_BIT__},
+     {0x00, 0x00}},
+    {{__2A_ADDR__, __2A_BIT__},
+     {__2B_ADDR__, __2B_BIT__},
+     {__2C_ADDR__, __2C_BIT__},
+     {__2D_ADDR__, __2D_BIT__},
+     {__2E_ADDR__, __2E_BIT__},
+     {__2F_ADDR__, __2F_BIT__},
+     {__2G_ADDR__, __2G_BIT__},
+     {0x00, 0x00}},
+    {{__3A_ADDR__, __3A_BIT__},
+     {__3B_ADDR__, __3B_BIT__},
+     {__3C_ADDR__, __3C_BIT__},
+     {__3D_ADDR__, __3D_BIT__},
+     {__3E_ADDR__, __3E_BIT__},
+     {__3F_ADDR__, __3F_BIT__},
+     {__3G_ADDR__, __3G_BIT__},
+     {0x00, 0x00}},
+    {{__4A_ADDR__, __4A_BIT__},
+     {__4B_ADDR__, __4B_BIT__},
+     {__4C_ADDR__, __4C_BIT__},
+     {__4D_ADDR__, __4D_BIT__},
+     {__4E_ADDR__, __4E_BIT__},
+     {__4F_ADDR__, __4F_BIT__},
+     {__4G_ADDR__, __4G_BIT__},
+     {0x00, 0x00}},
+    {{__5A_ADDR__, __5A_BIT__},
+     {__5B_ADDR__, __5B_BIT__},
+     {__5C_ADDR__, __5C_BIT__},
+     {__5D_ADDR__, __5D_BIT__},
+     {__5E_ADDR__, __5E_BIT__},
+     {__5F_ADDR__, __5F_BIT__},
+     {__5G_ADDR__, __5G_BIT__},
+     {0x00, 0x00}},
+    {{__6A_ADDR__, __6A_BIT__},
+     {__6B_ADDR__, __6B_BIT__},
+     {__6C_ADDR__, __6C_BIT__},
+     {__6D_ADDR__, __6D_BIT__},
+     {__6E_ADDR__, __6E_BIT__},
+     {__6F_ADDR__, __6F_BIT__},
+     {__6G_ADDR__, __6G_BIT__},
+     {__DP6_ADDR__, __DP6_BIT__}},
+    {{__7A_ADDR__, __7A_BIT__},
+     {__7B_ADDR__, __7B_BIT__},
+     {__7C_ADDR__, __7C_BIT__},
+     {__7D_ADDR__, __7D_BIT__},
+     {__7E_ADDR__, __7E_BIT__},
+     {__7F_ADDR__, __7F_BIT__},
+     {__7G_ADDR__, __7G_BIT__},
+     {__DP7_ADDR__, __DP7_BIT__}},
+    {{__8A_ADDR__, __8A_BIT__},
+     {__8B_ADDR__, __8B_BIT__},
+     {__8C_ADDR__, __8C_BIT__},
+     {__8D_ADDR__, __8D_BIT__},
+     {__8E_ADDR__, __8E_BIT__},
+     {__8F_ADDR__, __8F_BIT__},
+     {__8G_ADDR__, __8G_BIT__},
+     {__DP8_ADDR__, __DP8_BIT__}},
+    {{__9A_ADDR__, __9A_BIT__},
+     {__9B_ADDR__, __9B_BIT__},
+     {__9C_ADDR__, __9C_BIT__},
+     {__9D_ADDR__, __9D_BIT__},
+     {__9E_ADDR__, __9E_BIT__},
+     {__9F_ADDR__, __9F_BIT__},
+     {__9G_ADDR__, __9G_BIT__},
+     {0x00, 0x00}},
+    {{__10A_ADDR__, __10A_BIT__},
+     {__10B_ADDR__, __10B_BIT__},
+     {__10C_ADDR__, __10C_BIT__},
+     {__10D_ADDR__, __10D_BIT__},
+     {__10E_ADDR__, __10E_BIT__},
+     {__10F_ADDR__, __10F_BIT__},
+     {__10G_ADDR__, __10G_BIT__},
+     {__DP10_ADDR__, __DP10_BIT__}},
+    {{__11A_ADDR__, __11A_BIT__},
+     {__11B_ADDR__, __11B_BIT__},
+     {__11C_ADDR__, __11C_BIT__},
+     {__11D_ADDR__, __11D_BIT__},
+     {__11E_ADDR__, __11E_BIT__},
+     {__11F_ADDR__, __11F_BIT__},
+     {__11G_ADDR__, __11G_BIT__},
+     {__DP11_ADDR__, __DP11_BIT__}},
+    {{__12A_ADDR__, __12A_BIT__},
+     {__12B_ADDR__, __12B_BIT__},
+     {__12C_ADDR__, __12C_BIT__},
+     {__12D_ADDR__, __12D_BIT__},
+     {__12E_ADDR__, __12E_BIT__},
+     {__12F_ADDR__, __12F_BIT__},
+     {__12G_ADDR__, __12G_BIT__},
+     {__DP12_ADDR__, __DP12_BIT__}},
+    {{__13A_ADDR__, __13A_BIT__},
+     {__13B_ADDR__, __13B_BIT__},
+     {__13C_ADDR__, __13C_BIT__},
+     {__13D_ADDR__, __13D_BIT__},
+     {__13E_ADDR__, __13E_BIT__},
+     {__13F_ADDR__, __13F_BIT__},
+     {__13G_ADDR__, __13G_BIT__},
+     {0x00, 0x00}},
+};
 
 void __LCD_SET_SEG(u8 addr, u8 bitPos, bit setVal)
 {
@@ -324,4 +435,186 @@ void __LCD_SET_SEG(u8 addr, u8 bitPos, bit setVal)
         (*(unsigned char volatile xdata*)((u16)LCD_ADDR_H | addr)) &=
             ~(1 << bitPos);
     }
+}
+
+// to be consistant with the datasheet, the tubeindex starts from 1, not 0,
+// range 1-13
+void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
+{
+    if (tubeIndex < 1 || tubeIndex > 13)
+        return;
+    if (num == __LCD_CurrentNumDisplayed[tubeIndex - 1])
+    {
+        if (withDP && __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+        {
+            __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
+                          __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+        }
+        return;
+    }
+    else
+    {
+        u8 segments = __LCD_DT_NUM_LOOKUP[num > 10 ? 8 : num];
+        u8 i;
+        __LCD_CurrentNumDisplayed[tubeIndex - 1] = num;
+        for (i = 0; i < 7; i++)
+        {
+            __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][0],
+                          __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][1],
+                          (segments >> i) & 0x01);
+        }
+        if (withDP)
+        {
+            if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+            {
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
+                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+}
+
+void LCD_SetSignalSign(int8 signal)
+{
+    __LCD_SET_SEG(__S1_ADDR__, __S1_BIT__, signal >= 0);
+    __LCD_SET_SEG(__S2_ADDR__, __S2_BIT__, signal >= 1);
+    __LCD_SET_SEG(__S3_ADDR__, __S3_BIT__, signal >= 2);
+    __LCD_SET_SEG(__S4_ADDR__, __S4_BIT__, signal >= 3);
+    __LCD_SET_SEG(__S5_ADDR__, __S5_BIT__, signal >= 4);
+}
+
+void LCD_SetState(int8 stateNum)
+{
+    __LCD_SET_SEG(__STATUS_ADDR__, __STATUS_BIT__, stateNum >= 0);
+    __LCD_SetDigitalTube(1, stateNum < 0 ? 10 : stateNum, 0);
+}
+
+void LCD_SetTime(int8 hour, int8 minute, bit showColumn)
+{
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
+    {
+        __LCD_SetDigitalTube(2, 10, 0);
+        __LCD_SetDigitalTube(3, 10, 0);
+        __LCD_SetDigitalTube(4, 10, 0);
+        __LCD_SetDigitalTube(5, 10, 0);
+        return;
+    }
+    __LCD_SetDigitalTube(2, (hour / 10) == 0 ? 10 : hour / 10, 0);
+    __LCD_SetDigitalTube(3, hour % 10, 0);
+    __LCD_SetDigitalTube(4, minute / 10, 0);
+    __LCD_SetDigitalTube(5, minute % 10, 0);
+    __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, showColumn);
+}
+
+void LCD_SetBatteryLevel(int8 level)
+{
+    __LCD_SET_SEG(__T1_ADDR__, __T1_BIT__, level >= 0);
+    __LCD_SET_SEG(__T2_ADDR__, __T2_BIT__, level >= 1);
+    __LCD_SET_SEG(__T3_ADDR__, __T3_BIT__, level >= 2);
+    __LCD_SET_SEG(__T4_ADDR__, __T4_BIT__, level >= 3);
+    __LCD_SET_SEG(__T5_ADDR__, __T5_BIT__, level >= 4);
+}
+
+void LCD_SetStateLabels(u8 stateBitmask)
+{
+    __LCD_SET_SEG(__SET_ADDR__, __SET_BIT__, stateBitmask & 0x01);
+    __LCD_SET_SEG(__COMM_ADDR__, __COMM_BIT__, stateBitmask & 0x02);
+    __LCD_SET_SEG(__ALARM_ADDR__, __ALARM_BIT__, stateBitmask & 0x04);
+    __LCD_SET_SEG(__REC_ADDR__, __REC_BIT__, stateBitmask & 0x08);
+
+    __LCD_SET_SEG(__H1_ADDR__, __H1_BIT__, stateBitmask & 0x10);
+    __LCD_SET_SEG(__H2_ADDR__, __H2_BIT__, stateBitmask & 0x20);
+    __LCD_SET_SEG(__L1_ADDR__, __L1_BIT__, stateBitmask & 0x40);
+    __LCD_SET_SEG(__L2_ADDR__, __L2_BIT__, stateBitmask & 0x80);
+}
+
+void LCD_SetStateLabels(u8 stateBitmask)
+{
+    __LCD_SET_SEG(__SET_ADDR__, __SET_BIT__, stateBitmask & 0x01);
+    __LCD_SET_SEG(__COMM_ADDR__, __COMM_BIT__, stateBitmask & 0x02);
+    __LCD_SET_SEG(__ALARM_ADDR__, __ALARM_BIT__, stateBitmask & 0x04);
+    __LCD_SET_SEG(__REC_ADDR__, __REC_BIT__, stateBitmask & 0x08);
+
+    __LCD_SET_SEG(__H1_ADDR__, __H1_BIT__, stateBitmask & 0x10);
+    __LCD_SET_SEG(__H2_ADDR__, __H2_BIT__, stateBitmask & 0x20);
+    __LCD_SET_SEG(__L1_ADDR__, __L1_BIT__, stateBitmask & 0x40);
+    __LCD_SET_SEG(__L2_ADDR__, __L2_BIT__, stateBitmask & 0x80);
+}
+
+void LCD_SetTemperature(float num)
+{
+    if (num < -55.0f || num > 125.0f)
+    {
+        __LCD_SetDigitalTube(6, 10, 0);
+        __LCD_SetDigitalTube(7, 10, 0);
+        __LCD_SetDigitalTube(8, 10, 0);
+        __LCD_SetDigitalTube(9, 10, 0);
+        return;
+    }
+    else
+    {
+        uint32 xdata numInt;
+        if (num < 0)
+        {
+            numInt = -(uint32)(num * 10.0f);
+            __LCD_SetDigitalTube(6, 11, 0);
+
+            __LCD_SetDigitalTube(7, numInt / 100, 0);
+            __LCD_SetDigitalTube(8, (numInt / 10) % 10, 1);
+            __LCD_SetDigitalTube(9, numInt % 10, 0);
+        }
+        else
+        {
+            numInt = (uint32)(num * 10.0f);
+
+            __LCD_SetDigitalTube(6, numInt / 1000, 0);
+            __LCD_SetDigitalTube(7, (numInt / 100) % 10, 0);
+            __LCD_SetDigitalTube(8, (numInt / 10) % 10, 1);
+            __LCD_SetDigitalTube(9, numInt % 10, 0);
+        }
+    }
+}
+
+void LCD_SetHumidity(float num)
+{
+    if (num < 0)
+    {
+        __LCD_SetDigitalTube(10, 10, 0);
+        __LCD_SetDigitalTube(11, 10, 0);
+        __LCD_SetDigitalTube(12, 10, 0);
+        __LCD_SetDigitalTube(13, 10, 0);
+        return;
+    }
+    else
+    {
+        uint32 xdata numInt = (uint32)(num * 100.00f);
+        __LCD_SetDigitalTube(10, numInt / 1000, 0);
+        __LCD_SetDigitalTube(11, (numInt / 100) % 10, 1);
+        __LCD_SetDigitalTube(12, (numInt / 10) % 10, 0);
+        __LCD_SetDigitalTube(13, numInt % 10, 0);
+    }
+}
+
+void LCD_SetUnits(u8 unitBitmask)
+{
+    __LCD_SET_SEG(__Celsius_ADDR__, __Celsius_BIT__, unitBitmask & 0x01);
+    __LCD_SET_SEG(__LX_ADDR__, __LX_BIT__, unitBitmask & 0x02);
+    __LCD_SET_SEG(__V_ADDR__, __V_BIT__, unitBitmask & 0x04);
+    __LCD_SET_SEG(__mA_ADDR__, __mA_BIT__, unitBitmask & 0x08);
+
+    __LCD_SET_SEG(__RH_ADDR__, __RH_BIT__, unitBitmask & 0x10);
+    __LCD_SET_SEG(__ppm_ADDR__, __ppm_BIT__, unitBitmask & 0x20);
+    __LCD_SET_SEG(__MPa_ADDR__, __MPa_BIT__, unitBitmask & 0x40);
+    __LCD_SET_SEG(__KPa_ADDR__, __KPa_BIT__, unitBitmask & 0x80);
+}
+
+void LCD_SetTriangle(u8 triangleBitmask)
+{
+    __LCD_SET_SEG(__S6_ADDR__, __S6_BIT__, triangleBitmask & 0x01);
+    __LCD_SET_SEG(__S7_ADDR__, __S7_BIT__, triangleBitmask & 0x02);
+    __LCD_SET_SEG(__S8_ADDR__, __S8_BIT__, triangleBitmask & 0x04);
 }
