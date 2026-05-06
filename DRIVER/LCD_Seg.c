@@ -532,19 +532,6 @@ void LCD_SetStateLabels(u8 stateBitmask)
     __LCD_SET_SEG(__L2_ADDR__, __L2_BIT__, stateBitmask & 0x80);
 }
 
-void LCD_SetStateLabels(u8 stateBitmask)
-{
-    __LCD_SET_SEG(__SET_ADDR__, __SET_BIT__, stateBitmask & 0x01);
-    __LCD_SET_SEG(__COMM_ADDR__, __COMM_BIT__, stateBitmask & 0x02);
-    __LCD_SET_SEG(__ALARM_ADDR__, __ALARM_BIT__, stateBitmask & 0x04);
-    __LCD_SET_SEG(__REC_ADDR__, __REC_BIT__, stateBitmask & 0x08);
-
-    __LCD_SET_SEG(__H1_ADDR__, __H1_BIT__, stateBitmask & 0x10);
-    __LCD_SET_SEG(__H2_ADDR__, __H2_BIT__, stateBitmask & 0x20);
-    __LCD_SET_SEG(__L1_ADDR__, __L1_BIT__, stateBitmask & 0x40);
-    __LCD_SET_SEG(__L2_ADDR__, __L2_BIT__, stateBitmask & 0x80);
-}
-
 void LCD_SetTemperature(float num)
 {
     if (num < -55.0f || num > 125.0f)
