@@ -416,6 +416,11 @@
               <FileType>1</FileType>
               <FilePath>.\LIB\Timer.c</FilePath>
             </File>
+            <File>
+              <FileName>ExtInt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\ExtInt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -456,6 +461,11 @@
               <FileType>1</FileType>
               <FilePath>.\STC8H_LIB\STC8G_H_NVIC.c</FilePath>
             </File>
+            <File>
+              <FileName>STC8G_H_Exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\STC8H_LIB\STC8G_H_Exti.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -470,6 +480,16 @@
               <FileName>TouchKey.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DRIVER\TouchKey.c</FilePath>
+            </File>
+            <File>
+              <FileName>KeyExt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DRIVER\KeyExt.c</FilePath>
+            </File>
+            <File>
+              <FileName>NTC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DRIVER\NTC.c</FilePath>
             </File>
           </Files>
         </Group>

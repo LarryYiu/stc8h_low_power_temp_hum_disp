@@ -14,3 +14,11 @@ void GPIO_Config(u8 pinGroup, u8 pinNumber, u8 pinMode)
     GPIO_InitStructure.Mode = pinMode;
     GPIO_Inilize(pinGroup, &GPIO_InitStructure);
 }
+
+void GPIO_FrqConfig(u8 pinGroup, u8 pinNumber, u8 pinMode,
+                    GPIO_InitTypeDef* GPIO_InitStructure)
+{
+    GPIO_InitStructure->Pin = pinNumber;
+    GPIO_InitStructure->Mode = pinMode;
+    GPIO_Inilize(pinGroup, GPIO_InitStructure);
+}

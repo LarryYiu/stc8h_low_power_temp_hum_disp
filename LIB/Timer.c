@@ -77,9 +77,3 @@ void Timer_Config_t0_1ms()
     Timer_Config(Timer0, TIM_16BitAutoReload, TIM_CLOCK_1T, DISABLE, 1000UL,
                  ENABLE, 0, Priority_0);
 }
-
-void Timer_Config_t3_1s()
-{
-    Timer_Config(Timer3, TIM_16BitAutoReload, TIM_CLOCK_12T, DISABLE, 1200UL,
-                 ENABLE, 99, Priority_0);
-}

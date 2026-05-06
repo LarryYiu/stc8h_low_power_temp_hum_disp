@@ -39,6 +39,4 @@ void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 thtl,
  */
 void Timer_Config_t0_1ms();
 
-void Timer_Config_t3_1s();
-
 #endif  // __TIMER_H__

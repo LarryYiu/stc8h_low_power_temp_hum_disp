@@ -3,6 +3,7 @@
 
 #include "ExtInt.h"
 #include "GPIO.h"
+#include "STC8G_H_Exti.h"
 #include "STC8G_H_GPIO.h"
 
 void Key_Config();

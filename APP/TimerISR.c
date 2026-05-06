@@ -1,4 +1,5 @@
 #include "AppConfig.h"
+#include "NTC.h"
 #include "STC8G_H_Timer.h"
 #include "TouchKey.h"
 
@@ -17,7 +18,7 @@ void Timer0_ISR_Handler(void) interrupt TMR0_VECTOR
     }
 }
 
-void Timer1_ISR_Handler(void) interrupt TMR1_VECTOR {}
+void Timer1_ISR_Handler(void) interrupt TMR1_VECTOR { time1IntNum++; }
 
 void Timer2_ISR_Handler(void) interrupt TMR2_VECTOR {}
 
