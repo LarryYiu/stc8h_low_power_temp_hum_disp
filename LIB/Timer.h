@@ -33,10 +33,15 @@
 void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 thtl,
                   bit run, u8 prescaler, u8 priority);
 
+void Timer_ConfigRawTime(u8 timer, u8 mode, u8 clkSource, bit clkOut, u8 TH,
+                         u8 TL, bit run, u8 prescaler, u8 priority);
+
 /**
  * @brief  Common timer configuration function for the application. Enables
  * Timer0 with predefined settings for 1ms interrupts.
  */
 void Timer_Config_t0_1ms();
+
+void Timer_Config_t3_1us();
 
 #endif  // __TIMER_H__

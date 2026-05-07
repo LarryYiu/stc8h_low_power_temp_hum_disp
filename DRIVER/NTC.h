@@ -10,7 +10,7 @@
 #include "STC8G_H_Timer.h"
 #include "STC8H.h"
 
-extern u16 xdata time1IntNum;
+extern u32 xdata time3IntNum;
 
 void NTC_Config();
 

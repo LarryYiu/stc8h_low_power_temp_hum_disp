@@ -13,7 +13,6 @@ void main()
     App_Init();
     EA = 1;
     printf("System Initialized\r\n");
-
     while (1)
     {
         // if (TK_Ready)
@@ -52,7 +51,10 @@ void main()
         // NTC testing
         if (time0IntNum % 1000 == 0)
         {
-            __Charge(TRUE);
+            printf("c time: %lu\r\n", __Charge(TRUE));
+
+            // printf("Timer3 Count: %lu\r\n", time3IntNum);
+            // time3IntNum = 0;
         }
     }
 }
