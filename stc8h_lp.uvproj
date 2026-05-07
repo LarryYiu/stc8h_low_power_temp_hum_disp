@@ -421,6 +421,11 @@
               <FileType>1</FileType>
               <FilePath>.\LIB\ExtInt.c</FilePath>
             </File>
+            <File>
+              <FileName>Misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\Misc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

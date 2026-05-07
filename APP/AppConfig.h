@@ -29,4 +29,10 @@
 #define BACKLIGHT_CD 2
 // End of STATE MACHINE configuration
 
+// NTC configuration
+#define NTC_RES 10.0f
+#define NTC_SAMPLE_NUM 5.0f
+#define NTC_TABLE_SIZE 181
+// End of NTC configuration
+
 #endif  // __APP_CONFIG_H__

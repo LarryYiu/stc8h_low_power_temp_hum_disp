@@ -51,10 +51,8 @@ void main()
         // NTC testing
         if (time0IntNum % 1000 == 0)
         {
-            printf("c time: %lu\r\n", __Charge(TRUE));
-
-            // printf("Timer3 Count: %lu\r\n", time3IntNum);
-            // time3IntNum = 0;
+            printf("R_ntc: %.2f kOhms\r\n", NTC_GetResistance());
+            printf("T_ntc: %d C\r\n", NTC_GetTemp());
         }
     }
 }
