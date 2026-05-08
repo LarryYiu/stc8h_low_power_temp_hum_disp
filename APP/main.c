@@ -11,6 +11,7 @@ void OnLongPress(u8 keyIndex) { printf("%bu long\n", keyIndex); }
 
 void main()
 {
+    int16 temp;
     App_Init();
     EA = 1;
     printf("System Initialized\r\n");
@@ -54,7 +55,10 @@ void main()
         {
             // printf("R_ntc: %.2f kOhms\r\n", NTC_GetResistance());
             // printf("T_ntc: %d C\r\n", NTC_GetTemp());
-            printf("R_hr: %.2f kOhms\r\n", HR_GetResistance());
+            // printf("R_hr: %.2f kOhms\r\n", HR_GetResistance());
+            temp = NTC_GetTemp();
+            printf("T_hr: %d C\r\n", temp);
+            printf("H_hr: %u %%\r\n", HR_GetHum(&temp));
         }
     }
 }

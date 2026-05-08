@@ -15,6 +15,6 @@ void HR_Config();
 
 float HR_GetResistance();
 
-u16 HR_GetHum();
+u16 HR_GetHum(const int16* temperature);
 
 #endif  // __HR202L_H__
