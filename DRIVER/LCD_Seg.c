@@ -279,7 +279,7 @@ void LCD_Config()
      * LCDCFG2[1]: SEG1PS, 0 for P1.4, 1 for P7.6
      * LCDCFG2[0]: SEG0PS, 0 for P1.5, 1 for P7.7
      */
-    LCDCFG2 = 0x0B;
+    LCDCFG2 = 0x0f;
 
     /**
      * LCD REFRESH RATE = f(CLK)/(DBLEN[2:0] + COMLEN[19:0] + 1) * NUM_OF_COM
@@ -298,8 +298,8 @@ void LCD_Config()
     /* Enable LCD COMs and SEGs */
     COMON = 0x0f;
     SEGON1 = 0x0f;
-    SEGON2 = 0x30;
-    SEGON3 = 0xa6;
+    SEGON2 = 0xff;
+    SEGON3 = 0xff;
     SEGON4 = 0xff;
     SEGON5 = 0x0f;
 
@@ -314,8 +314,9 @@ void LCD_Config()
      */
     LCDCR = 0x01;  // Enable LCD
 }
-const u8 code __LCD_DT_NUM_LOOKUP[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d,
-                                       0x7d, 0x07, 0x7f, 0x6f, 0x00, 0x40};
+const u8 code __LCD_DT_NUM_LOOKUP[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66,
+                                       0x6d, 0x7d, 0x07, 0x7f, 0x6f,
+                                       0x00, 0x40, 0x79, 0x50};
 const u8 code __LCD_DT_ADDR_LOOKUP[13][8][2] = {
     {{__1A_ADDR__, __1A_BIT__},
      {__1B_ADDR__, __1B_BIT__},
@@ -497,9 +498,9 @@ void LCD_SetTime(int8 hour, int8 minute, bit showColumn)
 {
     if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
     {
-        __LCD_SetDigitalTube(2, 10, 0);
-        __LCD_SetDigitalTube(3, 10, 0);
-        __LCD_SetDigitalTube(4, 10, 0);
+        __LCD_SetDigitalTube(2, 12, 1);
+        __LCD_SetDigitalTube(3, 13, 1);
+        __LCD_SetDigitalTube(4, 13, 1);
         __LCD_SetDigitalTube(5, 10, 0);
         return;
     }
@@ -532,61 +533,56 @@ void LCD_SetStateLabels(u8 stateBitmask)
     __LCD_SET_SEG(__L2_ADDR__, __L2_BIT__, stateBitmask & 0x80);
 }
 
-void LCD_SetTemperature(float num)
+void LCD_SetTemperature(int16 num)
 {
-    if (num < -55.0f || num > 125.0f)
+    if (num < -55 || num > 125)
     {
-        __LCD_SetDigitalTube(6, 10, 0);
-        __LCD_SetDigitalTube(7, 10, 0);
-        __LCD_SetDigitalTube(8, 10, 0);
+        __LCD_SetDigitalTube(6, 12, 1);
+        __LCD_SetDigitalTube(7, 13, 1);
+        __LCD_SetDigitalTube(8, 13, 1);
         __LCD_SetDigitalTube(9, 10, 0);
         return;
     }
     else
     {
-        uint32 xdata numInt;
         if (num < 0)
         {
-            numInt = -(uint32)(num * 10.0f);
             __LCD_SetDigitalTube(6, 11, 0);
 
-            __LCD_SetDigitalTube(7, numInt / 100, 0);
-            __LCD_SetDigitalTube(8, (numInt / 10) % 10, 1);
-            __LCD_SetDigitalTube(9, numInt % 10, 0);
+            __LCD_SetDigitalTube(7, (-num) / 100, 0);
+            __LCD_SetDigitalTube(8, ((-num) / 10) % 10, 1);
+            __LCD_SetDigitalTube(9, (-num) % 10, 0);
         }
         else
         {
-            numInt = (uint32)(num * 10.0f);
-
-            __LCD_SetDigitalTube(6, numInt / 1000, 0);
-            __LCD_SetDigitalTube(7, (numInt / 100) % 10, 0);
-            __LCD_SetDigitalTube(8, (numInt / 10) % 10, 1);
-            __LCD_SetDigitalTube(9, numInt % 10, 0);
+            __LCD_SetDigitalTube(6, (num / 1000) ? (num / 1000) : 10, 0);
+            __LCD_SetDigitalTube(7, (num / 100) % 10, 0);
+            __LCD_SetDigitalTube(8, (num / 10) % 10, 1);
+            __LCD_SetDigitalTube(9, num % 10, 0);
         }
     }
 }
 
-void LCD_SetHumidity(float num)
+void LCD_SetHumidity(u16 num)
 {
-    if (num < 0)
+    if (num < 0 || num == 0xffff)
     {
-        __LCD_SetDigitalTube(10, 10, 0);
-        __LCD_SetDigitalTube(11, 10, 0);
-        __LCD_SetDigitalTube(12, 10, 0);
+        __LCD_SetDigitalTube(10, 12, 1);
+        __LCD_SetDigitalTube(11, 13, 1);
+        __LCD_SetDigitalTube(12, 13, 1);
         __LCD_SetDigitalTube(13, 10, 0);
         return;
     }
     else
     {
-        uint32 xdata numInt = (uint32)(num * 100.00f);
-        __LCD_SetDigitalTube(10, numInt / 1000, 0);
-        __LCD_SetDigitalTube(11, (numInt / 100) % 10, 1);
-        __LCD_SetDigitalTube(12, (numInt / 10) % 10, 0);
-        __LCD_SetDigitalTube(13, numInt % 10, 0);
+        __LCD_SetDigitalTube(10, num / 1000, 0);
+        __LCD_SetDigitalTube(11, (num / 100) % 10, 1);
+        __LCD_SetDigitalTube(12, (num / 10) % 10, 0);
+        __LCD_SetDigitalTube(13, num % 10, 0);
     }
 }
 
-void LCD_SetUnits(u8 unitBitmask)
+void LCD_SetUnits(u8 unitBitmask)  // tested
 {
     __LCD_SET_SEG(__Celsius_ADDR__, __Celsius_BIT__, unitBitmask & 0x01);
     __LCD_SET_SEG(__LX_ADDR__, __LX_BIT__, unitBitmask & 0x02);
@@ -604,4 +600,58 @@ void LCD_SetTriangle(u8 triangleBitmask)
     __LCD_SET_SEG(__S6_ADDR__, __S6_BIT__, triangleBitmask & 0x01);
     __LCD_SET_SEG(__S7_ADDR__, __S7_BIT__, triangleBitmask & 0x02);
     __LCD_SET_SEG(__S8_ADDR__, __S8_BIT__, triangleBitmask & 0x04);
+}
+
+void LCD_ALL()
+{
+    C0SEGV0 = 0xFF;
+    C0SEGV1 = 0xFF;
+    C0SEGV2 = 0xFF;
+    C0SEGV3 = 0xFF;
+    C0SEGV4 = 0xFF;
+
+    C1SEGV0 = 0xFF;
+    C1SEGV1 = 0xFF;
+    C1SEGV2 = 0xFF;
+    C1SEGV3 = 0xFF;
+    C1SEGV4 = 0xFF;
+
+    C2SEGV0 = 0xFF;
+    C2SEGV1 = 0xFF;
+    C2SEGV2 = 0xFF;
+    C2SEGV3 = 0xFF;
+    C2SEGV4 = 0xFF;
+
+    C3SEGV0 = 0xFF;
+    C3SEGV1 = 0xFF;
+    C3SEGV2 = 0xFF;
+    C3SEGV3 = 0xFF;
+    C3SEGV4 = 0xFF;
+}
+
+void LCD_CLEAR()
+{
+    C0SEGV0 = 0x00;
+    C0SEGV1 = 0x00;
+    C0SEGV2 = 0x00;
+    C0SEGV3 = 0x00;
+    C0SEGV4 = 0x00;
+
+    C1SEGV0 = 0x00;
+    C1SEGV1 = 0x00;
+    C1SEGV2 = 0x00;
+    C1SEGV3 = 0x00;
+    C1SEGV4 = 0x00;
+
+    C2SEGV0 = 0x00;
+    C2SEGV1 = 0x00;
+    C2SEGV2 = 0x00;
+    C2SEGV3 = 0x00;
+    C2SEGV4 = 0x00;
+
+    C3SEGV0 = 0x00;
+    C3SEGV1 = 0x00;
+    C3SEGV2 = 0x00;
+    C3SEGV3 = 0x00;
+    C3SEGV4 = 0x00;
 }

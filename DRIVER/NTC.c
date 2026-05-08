@@ -147,7 +147,7 @@ int16 NTC_GetTemp()
     }  // clang-format on
     else
     {
-        return 126;  // out of range, return max temp
+        return 1260;  // out of range, return max temp
     }
 }
 

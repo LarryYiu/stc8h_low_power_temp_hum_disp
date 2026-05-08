@@ -4,6 +4,7 @@
 #include "AppSetup.h"
 #include "Config.h"
 #include "HR202L.h"
+#include "LCD_Seg.h"
 
 void OnShortPress(u8 keyIndex) { printf("%bu short\n", keyIndex); }
 
@@ -11,10 +12,11 @@ void OnLongPress(u8 keyIndex) { printf("%bu long\n", keyIndex); }
 
 void main()
 {
-    int16 temp;
     App_Init();
     EA = 1;
     printf("System Initialized\r\n");
+
+    LCD_ALL();
     while (1)
     {
         // if (TK_Ready)
@@ -51,14 +53,14 @@ void main()
         // printf("Awake\r\n");
 
         // NTC testing
-        if (time0IntNum % 1000 == 0)
-        {
-            // printf("R_ntc: %.2f kOhms\r\n", NTC_GetResistance());
-            // printf("T_ntc: %d C\r\n", NTC_GetTemp());
-            // printf("R_hr: %.2f kOhms\r\n", HR_GetResistance());
-            temp = NTC_GetTemp();
-            printf("T_hr: %d C\r\n", temp);
-            printf("H_hr: %u %%\r\n", HR_GetHum(&temp));
-        }
+        // if (time0IntNum % 1000 == 0)
+        // {
+        //     int16 temp;
+        //     temp = NTC_GetTemp();
+        //     printf("T_hr: %d C\r\n", temp);
+        //     printf("H_hr: %u %%\r\n", HR_GetHum(&temp));
+        //     LCD_SetHumidity(HR_GetHum(&temp));
+        //     LCD_SetTemperature(temp);
+        // }
     }
 }
