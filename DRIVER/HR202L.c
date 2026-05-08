@@ -82,9 +82,53 @@ code const float __RES_HUM_TEMP_LOOKUP__[13][15] =
 };
 // clang-format on
 
+// u16 HR_GetHum(const int16* temperature)
+// {
+//     float res = HR_GetResistance();
+//     // add compensation
+//     if (res > 25600 || res < 1.3 || *temperature > 600 || *temperature < 0)
+//     {
+//         return 0xFFFF;  // out of capable range
+//     }
+//     else
+//     {
+//         float xdata humArr[15];
+//         u8 i, j;
+//         for (i = 0; i < 12; i++)
+//         {
+//             if (*temperature < __TEMP10X_INDEX__[i])
+//                 break;
+//         }
+//         i--;
+//         for (j = 0; j < 15; j++)
+//         {
+//             humArr[j] =
+//                 __RES_HUM_TEMP_LOOKUP__[i][j] +
+//                 (__RES_HUM_TEMP_LOOKUP__[i][j] -
+//                  __RES_HUM_TEMP_LOOKUP__[i + 1][j]) *
+//                     ((float)(*temperature - __TEMP10X_INDEX__[i]) /
+//                      (float)(__TEMP10X_INDEX__[i + 1] -
+//                      __TEMP10X_INDEX__[i]));
+//         }
+//         for (i = 0; i < 15; i++)
+//         {
+//             if (res > humArr[i])
+//                 break;
+//         }
+//         if (i == 0 || i == 15)
+//         {
+//             return 0xffff;  // out of capable range
+//         }
+//         i--;
+//         return __HUM10X_INDEX__[i] +
+//                (u16)((float)(__HUM10X_INDEX__[i + 1] - __HUM10X_INDEX__[i]) *
+//                      (humArr[i] - res) / (humArr[i] - humArr[i + 1]));
+//     }
+// }
+
 u16 HR_GetHum(const int16* temperature)
 {
-    float res = HR_GetResistance();
+    float idata res = HR_GetResistance();
     // add compensation
     if (res > 25600 || res < 1.3 || *temperature > 600 || *temperature < 0)
     {
@@ -92,7 +136,7 @@ u16 HR_GetHum(const int16* temperature)
     }
     else
     {
-        float xdata humArr[15];
+        float idata humHigh, humLow;
         u8 i, j;
         for (i = 0; i < 12; i++)
         {
@@ -102,25 +146,29 @@ u16 HR_GetHum(const int16* temperature)
         i--;
         for (j = 0; j < 15; j++)
         {
-            humArr[j] =
+            humLow =
                 __RES_HUM_TEMP_LOOKUP__[i][j] +
                 (__RES_HUM_TEMP_LOOKUP__[i][j] -
                  __RES_HUM_TEMP_LOOKUP__[i + 1][j]) *
                     ((float)(*temperature - __TEMP10X_INDEX__[i]) /
                      (float)(__TEMP10X_INDEX__[i + 1] - __TEMP10X_INDEX__[i]));
-        }
-        for (i = 0; i < 15; i++)
-        {
-            if (res > humArr[i])
+
+            if (res > humLow)
+            {
                 break;
+            }
+            else
+            {
+                humHigh = humLow;
+            }
         }
-        if (i == 0 || i == 15)
+        if (j == 0 || j == 15)
         {
             return 0xffff;  // out of capable range
         }
-        i--;
-        return __HUM10X_INDEX__[i] +
-               (u16)((float)(__HUM10X_INDEX__[i + 1] - __HUM10X_INDEX__[i]) *
-                     (humArr[i] - res) / (humArr[i] - humArr[i + 1]));
+        j--;
+        return __HUM10X_INDEX__[j] +
+               (u16)((float)(__HUM10X_INDEX__[j + 1] - __HUM10X_INDEX__[j]) *
+                     (humHigh - res) / (humHigh - humLow));
     }
 }
