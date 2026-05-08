@@ -426,6 +426,11 @@
               <FileType>1</FileType>
               <FilePath>.\LIB\Misc.c</FilePath>
             </File>
+            <File>
+              <FileName>ADC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\ADC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -471,6 +476,11 @@
               <FileType>1</FileType>
               <FilePath>.\STC8H_LIB\STC8G_H_Exti.c</FilePath>
             </File>
+            <File>
+              <FileName>STC8G_H_ADC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\STC8H_LIB\STC8G_H_ADC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -495,6 +505,11 @@
               <FileName>NTC.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DRIVER\NTC.c</FilePath>
+            </File>
+            <File>
+              <FileName>HR202L.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DRIVER\HR202L.c</FilePath>
             </File>
           </Files>
         </Group>

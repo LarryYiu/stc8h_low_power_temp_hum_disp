@@ -1,8 +1,9 @@
 #include <stdio.h>
 
+#include "ADC.h"
 #include "AppSetup.h"
 #include "Config.h"
-#include "NTC.h"
+#include "HR202L.h"
 
 void OnShortPress(u8 keyIndex) { printf("%bu short\n", keyIndex); }
 
@@ -51,8 +52,9 @@ void main()
         // NTC testing
         if (time0IntNum % 1000 == 0)
         {
-            printf("R_ntc: %.2f kOhms\r\n", NTC_GetResistance());
-            printf("T_ntc: %d C\r\n", NTC_GetTemp());
+            // printf("R_ntc: %.2f kOhms\r\n", NTC_GetResistance());
+            // printf("T_ntc: %d C\r\n", NTC_GetTemp());
+            printf("R_hr: %.2f kOhms\r\n", HR_GetResistance());
         }
     }
 }

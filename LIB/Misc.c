@@ -38,3 +38,21 @@ u8 BinarySearch(const float* arr, u8 size, float target)
 
     return 0xff;
 }
+
+void InsertionSort(u16* arr, u8 n)
+{
+    u8 i, j;
+    u16 key;
+    for (i = 1; i < n; i++)
+    {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > key)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
