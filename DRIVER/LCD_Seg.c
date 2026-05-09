@@ -455,7 +455,7 @@ void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
     }
     else
     {
-        u8 segments = __LCD_DT_NUM_LOOKUP[num > 10 ? 8 : num];
+        u8 segments = __LCD_DT_NUM_LOOKUP[num > 13 ? 8 : num];
         u8 i;
         __LCD_CurrentNumDisplayed[tubeIndex - 1] = num;
         for (i = 0; i < 7; i++)
@@ -535,7 +535,7 @@ void LCD_SetStateLabels(u8 stateBitmask)
 
 void LCD_SetTemperature(int16 num)
 {
-    if (num < -55 || num > 125)
+    if (num < -550 || num > 1250)
     {
         __LCD_SetDigitalTube(6, 12, 1);
         __LCD_SetDigitalTube(7, 13, 1);
@@ -547,16 +547,30 @@ void LCD_SetTemperature(int16 num)
     {
         if (num < 0)
         {
-            __LCD_SetDigitalTube(6, 11, 0);
-
-            __LCD_SetDigitalTube(7, (-num) / 100, 0);
-            __LCD_SetDigitalTube(8, ((-num) / 10) % 10, 1);
-            __LCD_SetDigitalTube(9, (-num) % 10, 0);
+            idata u8 d1 = (-num) / 100;
+            idata u8 d2 = ((-num) / 10) % 10;
+            idata u8 d3 = (-num) % 10;
+            if (d1)
+            {
+                __LCD_SetDigitalTube(6, 11, 0);
+                __LCD_SetDigitalTube(7, d1, 0);
+                __LCD_SetDigitalTube(8, d2, 1);
+                __LCD_SetDigitalTube(9, d3, 0);
+            }
+            else
+            {
+                __LCD_SetDigitalTube(6, 10, 0);
+                __LCD_SetDigitalTube(7, 11, 0);
+                __LCD_SetDigitalTube(8, d2, 1);
+                __LCD_SetDigitalTube(9, d3, 0);
+            }
         }
         else
         {
-            __LCD_SetDigitalTube(6, (num / 1000) ? (num / 1000) : 10, 0);
-            __LCD_SetDigitalTube(7, (num / 100) % 10, 0);
+            idata u8 d1 = num / 1000;
+            idata u8 d2 = (num / 100) % 10;
+            __LCD_SetDigitalTube(6, d1 ? d1 : 10, 0);
+            __LCD_SetDigitalTube(7, d2 ? d2 : 10, 0);
             __LCD_SetDigitalTube(8, (num / 10) % 10, 1);
             __LCD_SetDigitalTube(9, num % 10, 0);
         }
@@ -565,7 +579,7 @@ void LCD_SetTemperature(int16 num)
 
 void LCD_SetHumidity(u16 num)
 {
-    if (num < 0 || num == 0xffff)
+    if (num > 9999)
     {
         __LCD_SetDigitalTube(10, 12, 1);
         __LCD_SetDigitalTube(11, 13, 1);
@@ -575,9 +589,11 @@ void LCD_SetHumidity(u16 num)
     }
     else
     {
-        __LCD_SetDigitalTube(10, num / 1000, 0);
-        __LCD_SetDigitalTube(11, (num / 100) % 10, 1);
-        __LCD_SetDigitalTube(12, (num / 10) % 10, 0);
+        idata u8 d1 = num / 1000;
+        idata u8 d2 = (num / 100) % 10;
+        __LCD_SetDigitalTube(10, d1 ? d1 : 10, 0);
+        __LCD_SetDigitalTube(11, d2 ? d2 : 10, 0);
+        __LCD_SetDigitalTube(12, (num / 10) % 10, 1);
         __LCD_SetDigitalTube(13, num % 10, 0);
     }
 }

@@ -15,8 +15,11 @@ void main()
     App_Init();
     EA = 1;
     printf("System Initialized\r\n");
-
-    LCD_ALL();
+    // __LCD_SetDigitalTube(6, 1, 1);
+    // __LCD_SetDigitalTube(7, 2, 1);
+    // __LCD_SetDigitalTube(8, 5, 1);
+    // __LCD_SetDigitalTube(9, 6, 1);
+    //  LCD_SetHumidity(560);
     while (1)
     {
         // if (TK_Ready)
@@ -53,14 +56,14 @@ void main()
         // printf("Awake\r\n");
 
         // NTC testing
-        // if (time0IntNum % 1000 == 0)
-        // {
-        //     int16 temp;
-        //     temp = NTC_GetTemp();
-        //     printf("T_hr: %d C\r\n", temp);
-        //     printf("H_hr: %u %%\r\n", HR_GetHum(&temp));
-        //     LCD_SetHumidity(HR_GetHum(&temp));
-        //     LCD_SetTemperature(temp);
-        // }
+        if (time0IntNum % 1000 == 0)
+        {
+            int16 temp;
+            temp = NTC_GetTemp();
+            // printf("T_hr: %d C\r\n", temp);
+            // printf("H_hr: %u %%\r\n", HR_GetHum(&temp));
+            LCD_SetHumidity(HR_GetHum(&temp));
+            LCD_SetTemperature(temp);
+        }
     }
 }

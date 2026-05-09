@@ -15,8 +15,10 @@ void LCD_SetHumidity(u16 num);
 void LCD_SetUnits(u8 unitBitmask);
 void LCD_SetTriangle(u8 triangleBitmask);
 
+void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP);
 void __LCD_SET_SEG(u8 addr, u8 bitPos, bit setVal);
 
 void LCD_ALL();
+void LCD_CLEAR();
 
 #endif  // __LCD_SEG_H__
