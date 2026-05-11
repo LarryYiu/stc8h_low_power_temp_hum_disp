@@ -10,6 +10,7 @@ void HR_Config()
     P6_MODE_IN_HIZ(GPIO_Pin_2);
     ADC_Config(31, 0, 1, ADC_SPEED_2X16T, ADC_RIGHT_JUSTIFIED, ENABLE, -1);
     ADC_CONTR |= 0x06;  // Channel 6
+    ADC_CONTR |= 0x0f;  // Channel 15, 1.19V
 }
 
 void __InitIO()

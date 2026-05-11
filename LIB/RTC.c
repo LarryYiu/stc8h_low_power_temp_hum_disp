@@ -1,6 +1,7 @@
 #include "RTC.h"
 
 bit B_1S = FALSE;
+bit B_1M = FALSE;
 
 // void RTC_Config()
 // {
@@ -51,7 +52,8 @@ void RTC_Config(const void* timeIn)
     }
     RTC_InitStructure.RTC_Ssec = 00;
     RTC_Inilize(&RTC_InitStructure);
-    NVIC_RTC_Init(RTC_ALARM_INT | RTC_SEC_INT, Priority_0);
+    RTCIEN = 0x18;  // Enable RTC second and min interrupt
+    NVIC_RTC_Init(RTC_SEC_INT | RTC_MIN_INT, Priority_0);
     // RTC_ALARM_INT/RTC_DAY_INT/RTC_HOUR_INT/RTC_MIN_INT/RTC_SEC_INT/RTC_SEC2_INT/RTC_SEC8_INT/RTC_SEC32_INT/DISABLE;
 }
 
@@ -78,5 +80,10 @@ void RTC_SecISR() interrupt RTC_VECTOR
     {
         RTCIF &= ~0x08;  // clear interrupt flag
         B_1S = TRUE;
+    }
+    else if (RTCIF & 0x10)
+    {
+        RTCIF &= ~0x10;  // clear interrupt flag
+        B_1M = TRUE;
     }
 }

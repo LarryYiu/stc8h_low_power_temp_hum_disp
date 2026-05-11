@@ -9,6 +9,7 @@
 #define RTC_BASE_YEAR 2000
 
 extern bit B_1S;
+extern bit B_1M;
 
 typedef struct
 {

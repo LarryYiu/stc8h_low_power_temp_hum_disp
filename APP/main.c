@@ -2,6 +2,7 @@
 
 #include "ADC.h"
 #include "AppSetup.h"
+#include "BAT.h"
 #include "Config.h"
 #include "HR202L.h"
 #include "LCD_Seg.h"
@@ -26,6 +27,7 @@ void main()
     // __LCD_SetDigitalTube(9, 6, 1);
     //  LCD_SetHumidity(560);
     RTC_SetTime(&currentTime);
+    LCD_SetTime(currentTime.hour, currentTime.minute);
     while (1)
     {
         // if (TK_Ready)
@@ -72,13 +74,26 @@ void main()
         //     LCD_SetTemperature(temp);
         // }
 
-        // RTC testing
-        if (B_1S)
+        // RTC testing  RTCCR 0 disable, 1 enable
+        // if (B_1S)
+        // {
+        //     B_1S = FALSE;
+        //     LCD_FlipTimeColumn();
+        // }
+        // else if (B_1M)
+        // {
+        //     B_1M = FALSE;
+        //     RTC_GetTime(&currentTime);
+        //     printf("%02bu:%02bu\r\n", currentTime.hour, currentTime.minute);
+        //     LCD_SetTime(currentTime.hour, currentTime.minute);
+        // }
+
+        // bat volt testing
+        if (time0IntNum % 1000 == 0)
         {
-            B_1S = FALSE;
-            RTC_GetTime(&currentTime);
-            printf("Current Time: %02bu:%02bu:%02bu\r\n", currentTime.hour,
-                   currentTime.minute, currentTime.second);
+            u16 voltage = BAT_GetVoltage();
+            LCD_SetTemperature(voltage);
+            LCD_SetBatteryLevel(BAT_GetLevel(&voltage));
         }
     }
 }

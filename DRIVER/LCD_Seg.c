@@ -262,7 +262,7 @@
 
 int8 xdata __LCD_CurrentNumDisplayed[13] = {-1, -1, -1, -1, -1, -1, -1,
                                             -1, -1, -1, -1, -1, -1};
-
+bit idata __LCD_TimeCol = FALSE;
 void LCD_Config()
 {
     /**
@@ -504,7 +504,13 @@ void LCD_SetState(int8 stateNum)
     __LCD_SetDigitalTube(1, stateNum < 0 ? 10 : stateNum, 0);
 }
 
-void LCD_SetTime(int8 hour, int8 minute, bit showColumn)
+void LCD_FlipTimeColumn()
+{
+    __LCD_TimeCol = !__LCD_TimeCol;
+    __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, __LCD_TimeCol);
+}
+
+void LCD_SetTime(int8 hour, int8 minute)
 {
     if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
     {
@@ -518,7 +524,6 @@ void LCD_SetTime(int8 hour, int8 minute, bit showColumn)
     __LCD_SetDigitalTube(3, hour % 10, 0);
     __LCD_SetDigitalTube(4, minute / 10, 0);
     __LCD_SetDigitalTube(5, minute % 10, 0);
-    __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, showColumn);
 }
 
 void LCD_SetBatteryLevel(int8 level)

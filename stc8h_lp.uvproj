@@ -516,6 +516,11 @@
               <FileType>1</FileType>
               <FilePath>.\DRIVER\HR202L.c</FilePath>
             </File>
+            <File>
+              <FileName>Bat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DRIVER\Bat.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

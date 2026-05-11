@@ -7,7 +7,8 @@
 void LCD_Config();
 void LCD_SetSignalSign(int8 signal);
 void LCD_SetState(int8 stateNum);
-void LCD_SetTime(int8 hour, int8 minute, bit showColumn);
+void LCD_FlipTimeColumn();
+void LCD_SetTime(int8 hour, int8 minute);
 void LCD_SetBatteryLevel(int8 level);
 void LCD_SetStateLabels(u8 stateBitmask);
 void LCD_SetTemperature(int16 num);
