@@ -431,6 +431,11 @@
               <FileType>1</FileType>
               <FilePath>.\LIB\ADC.c</FilePath>
             </File>
+            <File>
+              <FileName>RTC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\RTC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

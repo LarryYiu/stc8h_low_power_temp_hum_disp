@@ -7,6 +7,7 @@
 #include "KeyExt.h"
 #include "LCD_Seg.h"
 #include "NTC.h"
+#include "RTC.h"
 #include "STC8G_H_Delay.h"
 #include "STC8G_H_GPIO.h"
 #include "STC8G_H_NVIC.h"

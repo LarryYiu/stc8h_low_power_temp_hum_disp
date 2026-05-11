@@ -446,11 +446,20 @@ void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
         return;
     if (num == __LCD_CurrentNumDisplayed[tubeIndex - 1])
     {
-        if (withDP && __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+        if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
         {
-            __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
-                          __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+            if (withDP)
+            {
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
+                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+            }
+            else
+            {
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
+                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
+            }
         }
+
         return;
     }
     else
@@ -464,16 +473,17 @@ void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
                           __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][1],
                           (segments >> i) & 0x01);
         }
-        if (withDP)
+        if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
         {
-            if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+            if (withDP)
             {
                 __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
                               __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
             }
             else
             {
-                return;
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
+                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
             }
         }
     }
@@ -585,6 +595,7 @@ void LCD_SetHumidity(u16 num)
         __LCD_SetDigitalTube(11, 13, 1);
         __LCD_SetDigitalTube(12, 13, 1);
         __LCD_SetDigitalTube(13, 10, 0);
+        printf("Invalid humidity, error 9999: %u\n", num);
         return;
     }
     else

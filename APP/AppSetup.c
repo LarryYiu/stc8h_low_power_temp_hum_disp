@@ -12,4 +12,5 @@ void App_Init()
     Key_Config();
     LCD_Config();
     TouchKey_Config();
+    RTC_Config(NULL);
 }
