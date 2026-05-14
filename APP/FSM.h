@@ -12,6 +12,7 @@
 #include "NTC.h"
 #include "Timer.h"
 #include "UART.h"
+#include "AppSetup.h"
 
 typedef enum
 {

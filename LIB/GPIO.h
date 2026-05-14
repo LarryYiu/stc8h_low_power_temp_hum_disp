@@ -28,6 +28,5 @@ void GPIO_Config(u8 pinGroup, u8 pinNumber, u8 pinMode);
  * @param GPIO_InitStructure: Pointer to a pre-allocated GPIO_InitTypeDef
  * structure
  */
-void GPIO_FrqConfig(u8 pinGroup, u8 pinNumber, u8 pinMode,
-                    GPIO_InitTypeDef* GPIO_InitStructure);
-#endif  // __GPIO_H__
+void GPIO_FrqConfig(u8 pinGroup, u8 pinNumber, u8 pinMode, GPIO_InitTypeDef* GPIO_InitStructure);
+#endif // __GPIO_H__

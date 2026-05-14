@@ -20,12 +20,16 @@ void __onOnShortPress(u8 key);
 
 void __updateTempHum();
 
+void __GPIO_Sleep();
+void __GPIO_Awake();
+
 FSM_t fsm = {__StateOn};
 
 void __OnEnterSleep()
 {
     // LCD_UseExternalOscillator();
     printf("->Sleep\r\n");
+    __GPIO_Sleep();
     ADC_Off();
     UART_Off();
     Timer_Off(1);
@@ -41,6 +45,7 @@ void __OnEnterSleep()
 void __OnEnterAwake()
 {
     // LCD_UseInternalOscillator();
+    __GPIO_Awake();
     ADC_On();
     UART_On();
     Timer_On(1);
@@ -235,6 +240,37 @@ void __updateTempHum()
 void FSM_SetWakeUpSource(FSM_WAKE_UP_SOURCE_t source)
 {
     wakeUpSource = source;
+}
+
+void __GPIO_Sleep()
+{
+    P0_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P1_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P2_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P3_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P3_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P4_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P5_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P6_DIGIT_IN_DISABLE(GPIO_Pin_All);
+    P7_DIGIT_IN_DISABLE(GPIO_Pin_All);
+
+    P3_DIGIT_IN_ENABLE(GPIO_Pin_2 | GPIO_Pin_3); // INT1, INT0
+    P6_DIGIT_IN_ENABLE(GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6);
+    P5_DIGIT_IN_ENABLE(GPIO_Pin_0); // COM0(3)
+    P0_DIGIT_IN_ENABLE(GPIO_Pin_3); // SEG13(27)
+}
+
+void __GPIO_Awake()
+{
+    P0_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P1_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P2_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P3_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P3_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P4_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P5_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P6_DIGIT_IN_ENABLE(GPIO_Pin_All);
+    P7_DIGIT_IN_ENABLE(GPIO_Pin_All);
 }
 
 /* KEY EVENT FUNCTIONS*/
