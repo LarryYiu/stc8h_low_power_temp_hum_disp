@@ -33,8 +33,8 @@
  * @param  pinSwitch: Pin switch configuration for UART (e.g., UART1_SW_P30_P31,
  * or -1 for no switch) Need <STC8G_H_Switch.h>
  */
-void UART_Config(u8 uartPort, u32 baudrate, u8 mode, u8 timerSelect,
-                 bit rxEnable, bit doubleBaudrate, u8 priority, int8 pinSwitch);
+void UART_Config(u8 uartPort, u32 baudrate, u8 mode, u8 timerSelect, bit rxEnable, bit doubleBaudrate, u8 priority,
+                 int8 pinSwitch);
 
 /**
  * @brief  Common UART configuration function for the application. Enables UART1
@@ -43,4 +43,9 @@ void UART_Config(u8 uartPort, u32 baudrate, u8 mode, u8 timerSelect,
  * it by P_SW2 |= 0x80 or EAXSFR() before calling.
  */
 void UART_Config_Common();
-#endif  // __UART_H__
+
+void UART_On();
+
+void UART_Off();
+
+#endif // __UART_H__

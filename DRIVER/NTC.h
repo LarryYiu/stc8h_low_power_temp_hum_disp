@@ -14,17 +14,15 @@
 
 #ifndef NTC_RES
 #define NTC_RES 10.0f
-#endif  // NTC_RES in kOhms
+#endif // NTC_RES in kOhms
 
 #ifndef NTC_SAMPLE_NUM
 #define NTC_SAMPLE_NUM 5.0f
-#endif  // NTC_SAMPLE_NUM
+#endif // NTC_SAMPLE_NUM
 
 #ifndef NTC_TABLE_SIZE
 #define NTC_TABLE_SIZE 181
-#endif  // NTC_TABLE_SIZE
-
-extern u32 xdata time3IntNum;
+#endif // NTC_TABLE_SIZE
 
 void NTC_Config();
 
@@ -32,4 +30,6 @@ float NTC_GetResistance();
 
 int16 NTC_GetTemp();
 
-#endif  // __NTC_H__
+void NTC_IncrementTimer();
+
+#endif // __NTC_H__

@@ -1,19 +1,16 @@
 #include "Timer.h"
 
-void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 msIntr,
-                  bit run, u8 prescaler, u8 priority)
+void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 msIntr, bit run, u8 prescaler, u8 priority)
 {
     TIM_InitTypeDef tim;
-    uint32 xdata timerLoader =
-        MAIN_Fosc /
-        (MAIN_Fosc / ((clkSource == TIM_CLOCK_12T ? 12 : 1) * msIntr));
-    if (timerLoader > 65536UL)
+    uint32 xdata timerLoader = MAIN_Fosc / (MAIN_Fosc / ((clkSource == TIM_CLOCK_12T ? 12 : 1) * msIntr));
+    if(timerLoader > 65536UL)
     {
         timerLoader = 65536UL;
     }
-    tim.TIM_Mode = mode;
+    tim.TIM_Mode      = mode;
     tim.TIM_ClkSource = clkSource;
-    tim.TIM_ClkOut = clkOut;
+    tim.TIM_ClkOut    = clkOut;
     /*
      * T = (65536 - InitialValue) / Sysclk
      * Minimum InitialValue = 1, so Maximum T = 65535 / Sysclk
@@ -22,15 +19,15 @@ void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 msIntr,
      * InitialValue = 65536 - (Sysclk * T) = 65536 - (Sysclk / 1000)
      */
     tim.TIM_Value = 65536UL - (MAIN_Fosc / (unsigned long)timerLoader);
-    tim.TIM_Run = run;
-    if (prescaler)  // for timer 3/4, set prescaler value
+    tim.TIM_Run   = run;
+    if(prescaler) // for timer 3/4, set prescaler value
     {
         tim.TIM_PS = prescaler;
     }
     Timer_Inilize(timer, &tim);
-    if (priority)  // for timer 0/1/2, set priority value
+    if(priority) // for timer 0/1/2, set priority value
     {
-        switch (timer)
+        switch(timer)
         {
             case 0:
                 NVIC_Timer0_Init(ENABLE, priority);
@@ -51,7 +48,7 @@ void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 msIntr,
     }
     else
     {
-        switch (timer)
+        switch(timer)
         {
             case 0:
                 NVIC_Timer0_Init(ENABLE, NULL);
@@ -74,8 +71,7 @@ void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 msIntr,
 
 void Timer_Config_t0_1ms()
 {
-    Timer_Config(Timer0, TIM_16BitAutoReload, TIM_CLOCK_1T, DISABLE, 1000UL,
-                 ENABLE, 0, Priority_0);
+    Timer_Config(Timer0, TIM_16BitAutoReload, TIM_CLOCK_1T, DISABLE, 1000UL, ENABLE, 0, Priority_0);
 }
 
 void Timer_Config_t3_1us()
@@ -87,4 +83,47 @@ void Timer_Config_t3_1us()
     TM3PS = 0;
     Timer3_Run(0);
     NVIC_Timer3_Init(ENABLE, Priority_0);
+}
+
+void Timer_On(u8 timer)
+{
+    switch(timer)
+    {
+        case 0:
+            Timer0_Run(ENABLE);
+            break;
+        case 1:
+            Timer1_Run(ENABLE);
+            break;
+        case 2:
+            Timer2_Run(ENABLE);
+            break;
+        case 3:
+            Timer3_Run(ENABLE);
+            break;
+        case 4:
+            Timer4_Run(ENABLE);
+            break;
+    }
+}
+void Timer_Off(u8 timer)
+{
+    switch(timer)
+    {
+        case 0:
+            Timer0_Run(DISABLE);
+            break;
+        case 1:
+            Timer1_Run(DISABLE);
+            break;
+        case 2:
+            Timer2_Run(DISABLE);
+            break;
+        case 3:
+            Timer3_Run(DISABLE);
+            break;
+        case 4:
+            Timer4_Run(DISABLE);
+            break;
+    }
 }

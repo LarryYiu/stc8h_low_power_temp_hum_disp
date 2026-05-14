@@ -5,17 +5,18 @@
 #include "STC8G_H_NVIC.h"
 #include "STC8H.h"
 #include "STC8H_RTC.h"
+#include "FSM.h"
+// extern bit B_1S;
+// extern bit B_1M;
+// extern bit B_1H;
 
 #define RTC_BASE_YEAR 2000
 
-extern bit B_1S;
-extern bit B_1M;
-
 typedef struct
 {
-    u8 hour;    // 0-23
-    u8 minute;  // 0-59
-    u8 second;  // 0-59
+    u8 hour;   // 0-23
+    u8 minute; // 0-59
+    // u8 second; // 0-59
 } RTC_Time_t;
 
 void RTC_Config(const void* timeIn);
@@ -31,4 +32,11 @@ void RTC_SetTime(const RTC_Time_t* time);
 
 void RTC_GetTime(RTC_Time_t* time);
 
-#endif  // __RTC_H__
+bit RTC_INT_1S();
+bit RTC_INT_1M();
+bit RTC_INT_1H();
+
+void RTC_On();
+void RTC_Off();
+
+#endif // __RTC_H__

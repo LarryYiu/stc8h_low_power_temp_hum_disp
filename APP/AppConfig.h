@@ -4,7 +4,7 @@
 #define TIMER0_INTERVAL_MS 100
 
 // Touch Key configuration
-#define TK_CHANNEL_ENABLED 0x001B  //  0000 0000 0001 1011 (0 1 3 4)
+#define TK_CHANNEL_ENABLED 0x001B //  0000 0000 0001 1011 (0 1 3 4)
 #define TK_CFG1 (1 << 4) + 6
 
 // btn_power: 15101/16088 - 987- 0.06135
@@ -35,4 +35,6 @@
 #define NTC_TABLE_SIZE 181
 // End of NTC configuration
 
-#endif  // __APP_CONFIG_H__
+#define SETTING_MODE_TIME_FLASHING_INTERVAL_MS 500
+
+#endif // __APP_CONFIG_H__

@@ -1,5 +1,4 @@
 #include "KeyExt.h"
-u8 WakeUpSource;
 
 void Key_Config()
 {
@@ -13,5 +12,7 @@ void INT1_ISR_Handler(void) interrupt INT1_VECTOR
 {
     // awaken from lp mode
     // update state of FSM
-    WakeUpSource = 1;
+    // WakeUpSource = 1;
+
+    FSM_SetWakeUpSource(WAKE_UP_SOURCE_INT);
 }

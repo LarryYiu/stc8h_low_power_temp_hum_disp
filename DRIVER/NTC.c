@@ -5,17 +5,13 @@
 #define __CAP__ P65
 #define __CAL__ P64
 
-u32 xdata time3IntNum = 0;
+u32 xdata NTC_Time = 0;
 idata GPIO_InitTypeDef GPIO_InitStructure;
 
-#define ModeNTC(mode) \
-    GPIO_FrqConfig(GPIO_P6, GPIO_Pin_6, mode, &GPIO_InitStructure);
-#define ModeINT(mode) \
-    GPIO_FrqConfig(GPIO_P3, GPIO_Pin_2, mode, &GPIO_InitStructure);
-#define ModeCAP(mode) \
-    GPIO_FrqConfig(GPIO_P6, GPIO_Pin_5, mode, &GPIO_InitStructure);
-#define ModeCAL(mode) \
-    GPIO_FrqConfig(GPIO_P6, GPIO_Pin_4, mode, &GPIO_InitStructure);
+#define ModeNTC(mode) GPIO_FrqConfig(GPIO_P6, GPIO_Pin_6, mode, &GPIO_InitStructure);
+#define ModeINT(mode) GPIO_FrqConfig(GPIO_P3, GPIO_Pin_2, mode, &GPIO_InitStructure);
+#define ModeCAP(mode) GPIO_FrqConfig(GPIO_P6, GPIO_Pin_5, mode, &GPIO_InitStructure);
+#define ModeCAL(mode) GPIO_FrqConfig(GPIO_P6, GPIO_Pin_4, mode, &GPIO_InitStructure);
 
 void NTC_Config()
 {
@@ -57,7 +53,7 @@ u32 __Charge(bit isNTC)
     u32 time = 0;
     __ALL_HiZ();
     // while (__CAP__ != 0);  // wait for the capacitor to be fully discharged
-    if (isNTC)
+    if(isNTC)
     {
         ModeNTC(GPIO_OUT_PP);
         __NTC__ = 1;
@@ -69,12 +65,13 @@ u32 __Charge(bit isNTC)
     }
 
     Timer3_Run(1);
-    while (!INT0);
+    while(!INT0)
+        ;
     Timer3_Run(0);
-    time = (time3IntNum * 65536) + ((u32)T3H * 256) + (u32)T3L;
-    T3H = 0;
-    T3L = 0;
-    time3IntNum = 0;
+    time     = (NTC_Time * 65536) + ((u32)T3H * 256) + (u32)T3L;
+    T3H      = 0;
+    T3L      = 0;
+    NTC_Time = 0;
 
     __Discharge();
     return time;
@@ -87,7 +84,7 @@ float NTC_GetResistance()
 
     __Charge(FALSE);
 
-    for (i = 0; i < NTC_SAMPLE_NUM; i++)
+    for(i = 0; i < NTC_SAMPLE_NUM; i++)
     {
         resSum += NTC_RES * (float)__Charge(TRUE) / (float)__Charge(FALSE);
     }
@@ -123,16 +120,16 @@ int16 NTC_GetTemp()
 {
     idata u8 i;
     idata float resSum = 0.0f;
-    idata float res = 0.0f;
+    idata float res    = 0.0f;
     __Charge(FALSE);
 
-    for (i = 0; i < NTC_SAMPLE_NUM; i++)
+    for(i = 0; i < NTC_SAMPLE_NUM; i++)
     {
         resSum += NTC_RES * (float)__Charge(TRUE) / (float)__Charge(FALSE);
     }
 
     res = (float)(resSum / NTC_SAMPLE_NUM);
-    i = BinarySearch(__RES_TEMP_LOOKUP__, NTC_TABLE_SIZE, res);
+    i   = BinarySearch(__RES_TEMP_LOOKUP__, NTC_TABLE_SIZE, res);
 
     // clang-format off
     if (i != 0xff)
@@ -144,11 +141,19 @@ int16 NTC_GetTemp()
         + (__RES_TEMP_LOOKUP__[i] - res) 
         / (__RES_TEMP_LOOKUP__[i] - __RES_TEMP_LOOKUP__[i + 1])) 
         * 10.0f);
-    }  // clang-format on
+    } // clang-format on
     else
     {
-        return 1260;  // out of range, return max temp
+        return 1260; // out of range, return max temp
     }
 }
 
-void INT0_ISR_Handler(void) interrupt INT0_VECTOR { Timer3_Run(0); }
+void INT0_ISR_Handler(void) interrupt INT0_VECTOR
+{
+    Timer3_Run(0);
+}
+
+void NTC_IncrementTimer()
+{
+    NTC_Time++;
+}

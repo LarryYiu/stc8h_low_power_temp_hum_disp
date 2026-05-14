@@ -30,8 +30,7 @@
  */
 
 //
-void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 thtl,
-                  bit run, u8 prescaler, u8 priority);
+void Timer_Config(u8 timer, u8 mode, u8 clkSource, bit clkOut, u32 thtl, bit run, u8 prescaler, u8 priority);
 
 /**
  * @brief  Common timer configuration function for the application. Enables
@@ -41,4 +40,7 @@ void Timer_Config_t0_1ms();
 
 void Timer_Config_t3_1us();
 
-#endif  // __TIMER_H__
+void Timer_On(u8 timer);
+void Timer_Off(u8 timer);
+
+#endif // __TIMER_H__

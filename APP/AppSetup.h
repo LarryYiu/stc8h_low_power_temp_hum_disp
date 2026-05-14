@@ -17,6 +17,8 @@
 #include "Timer.h"
 #include "TouchKey.h"
 #include "UART.h"
+#include "Bat.h"
+#include "HR202L.h"
 
 void App_Init();
-#endif  // __APP_SETUP_H__
+#endif // __APP_SETUP_H__

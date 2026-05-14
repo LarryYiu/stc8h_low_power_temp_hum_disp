@@ -260,9 +260,8 @@
 #define __T1_BIT__ 1
 #define __T2_BIT__ 0
 
-int8 xdata __LCD_CurrentNumDisplayed[13] = {-1, -1, -1, -1, -1, -1, -1,
-                                            -1, -1, -1, -1, -1, -1};
-bit idata __LCD_TimeCol = FALSE;
+int8 xdata __LCD_CurrentNumDisplayed[13] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+bit idata __LCD_TimeCol                  = FALSE;
 void LCD_Config()
 {
     /**
@@ -270,8 +269,12 @@ void LCD_Config()
      * CKSEL: 0 cpu clock, 1 external 32kHz
      * VLCDSEL: 111 for 1.0 * VCC
      */
-    LCDCFG = 0x07;
-
+    X32KCR = 0x80 + 0x40;
+    while(!(X32KCR & 0x01))
+    {
+    }
+    LCDCFG  = 0x80 + 0x03;
+    LCDCFG2 = 0x0f;
     /**
      * LCDCFG2[3:0] pin mux for COM0-COM3
      * LCDCFG2[3]: SEG3PS, 0 for P1.2, 1 for P7.4
@@ -284,19 +287,19 @@ void LCD_Config()
     /**
      * LCD REFRESH RATE = f(CLK)/(DBLEN[2:0] + COMLEN[19:0] + 1) * NUM_OF_COM
      * DBLEN = 2
-     * COMLEN = 0x00c34d = 5005
-     * NUM_OF_COM = 22
+     * COMLEN = 0x000041
+     * NUM_OF_COM = 4
      */
-    DBLEN = 0x02;
+    DBLEN   = 0x02;
     COMLENH = 0x00;
-    COMLENM = 0xc3;
-    COMLENL = 0x4d;
+    COMLENM = 0x00;
+    COMLENL = 0x41;
 
     /*FLICKER RATE 60Hz*/
-    BLINKRATE = 60;
+    BLINKRATE = 10;
 
     /* Enable LCD COMs and SEGs */
-    COMON = 0x0f;
+    COMON  = 0x0f;
     SEGON1 = 0x0f;
     SEGON2 = 0xff;
     SEGON3 = 0xff;
@@ -312,11 +315,21 @@ void LCD_Config()
      *
      * LCDCR[0] is the ENABLE bit
      */
-    LCDCR = 0x01;  // Enable LCD
+    LCDCR = 0x01; // Enable LCD
 }
-const u8 code __LCD_DT_NUM_LOOKUP[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66,
-                                       0x6d, 0x7d, 0x07, 0x7f, 0x6f,
-                                       0x00, 0x40, 0x79, 0x50};
+
+// void LCD_UseInternalOscillator()
+// {
+//     LCDCFG &= 0x3f;
+// }
+
+// void LCD_UseExternalOscillator()
+// {
+//     LCDCFG |= 0x80;
+// }
+
+const u8 code __LCD_DT_NUM_LOOKUP[]          = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d,
+                                                0x07, 0x7f, 0x6f, 0x00, 0x40, 0x79, 0x50};
 const u8 code __LCD_DT_ADDR_LOOKUP[13][8][2] = {
     {{__1A_ADDR__, __1A_BIT__},
      {__1B_ADDR__, __1B_BIT__},
@@ -426,15 +439,13 @@ const u8 code __LCD_DT_ADDR_LOOKUP[13][8][2] = {
 
 void __LCD_SET_SEG(u8 addr, u8 bitPos, bit setVal)
 {
-    if (setVal)
+    if(setVal)
     {
-        (*(unsigned char volatile xdata*)((u16)LCD_ADDR_H | addr)) |=
-            (1 << bitPos);
+        (*(unsigned char volatile xdata*)((u16)LCD_ADDR_H | addr)) |= (1 << bitPos);
     }
     else
     {
-        (*(unsigned char volatile xdata*)((u16)LCD_ADDR_H | addr)) &=
-            ~(1 << bitPos);
+        (*(unsigned char volatile xdata*)((u16)LCD_ADDR_H | addr)) &= ~(1 << bitPos);
     }
 }
 
@@ -442,21 +453,18 @@ void __LCD_SET_SEG(u8 addr, u8 bitPos, bit setVal)
 // range 1-13
 void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
 {
-    if (tubeIndex < 1 || tubeIndex > 13)
-        return;
-    if (num == __LCD_CurrentNumDisplayed[tubeIndex - 1])
+    if(tubeIndex < 1 || tubeIndex > 13) return;
+    if(num == __LCD_CurrentNumDisplayed[tubeIndex - 1])
     {
-        if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+        if(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
         {
-            if (withDP)
+            if(withDP)
             {
-                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
-                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0], __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
             }
             else
             {
-                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
-                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0], __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
             }
         }
 
@@ -467,23 +475,20 @@ void __LCD_SetDigitalTube(u8 tubeIndex, int8 num, bit withDP)
         u8 segments = __LCD_DT_NUM_LOOKUP[num > 13 ? 8 : num];
         u8 i;
         __LCD_CurrentNumDisplayed[tubeIndex - 1] = num;
-        for (i = 0; i < 7; i++)
+        for(i = 0; i < 7; i++)
         {
-            __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][0],
-                          __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][1],
+            __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][0], __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][i][1],
                           (segments >> i) & 0x01);
         }
-        if (__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
+        if(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0] != 0x00)
         {
-            if (withDP)
+            if(withDP)
             {
-                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
-                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0], __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 1);
             }
             else
             {
-                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0],
-                              __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
+                __LCD_SET_SEG(__LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][0], __LCD_DT_ADDR_LOOKUP[tubeIndex - 1][7][1], 0);
             }
         }
     }
@@ -510,9 +515,58 @@ void LCD_FlipTimeColumn()
     __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, __LCD_TimeCol);
 }
 
-void LCD_SetTime(int8 hour, int8 minute)
+void LCD_TimeColOn()
 {
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
+    __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, 1);
+}
+void LCD_TimeColOff()
+{
+    __LCD_SET_SEG(__COL_ADDR__, __COL_BIT__, 0);
+}
+
+void LCD_SetHour(u8 hour)
+{
+    if(hour == LCD_TIME_EMPTY)
+    {
+        __LCD_SetDigitalTube(2, 10, 0);
+        __LCD_SetDigitalTube(3, 10, 0);
+    }
+    else if(hour > 23)
+    {
+        // printf("Invalid hour: %bu\n", hour);
+        __LCD_SetDigitalTube(2, 12, 0);
+        __LCD_SetDigitalTube(3, 13, 0);
+    }
+    else
+    {
+        __LCD_SetDigitalTube(2, (hour / 10) == 0 ? 10 : hour / 10, 0);
+        __LCD_SetDigitalTube(3, hour % 10, 0);
+    }
+}
+
+void LCD_SetMinute(u8 minute)
+{
+    if(minute == LCD_TIME_EMPTY)
+    {
+        __LCD_SetDigitalTube(4, 10, 0);
+        __LCD_SetDigitalTube(5, 10, 0);
+    }
+    else if(minute > 59)
+    {
+        // printf("Invalid minute: %bu\n", minute);
+        __LCD_SetDigitalTube(4, 12, 0);
+        __LCD_SetDigitalTube(5, 13, 0);
+    }
+    else
+    {
+        __LCD_SetDigitalTube(4, minute / 10, 0);
+        __LCD_SetDigitalTube(5, minute % 10, 0);
+    }
+}
+
+void LCD_SetTime(u8 hour, u8 minute)
+{
+    if(hour > 23 || minute > 59)
     {
         __LCD_SetDigitalTube(2, 12, 1);
         __LCD_SetDigitalTube(3, 13, 1);
@@ -520,10 +574,14 @@ void LCD_SetTime(int8 hour, int8 minute)
         __LCD_SetDigitalTube(5, 10, 0);
         return;
     }
-    __LCD_SetDigitalTube(2, (hour / 10) == 0 ? 10 : hour / 10, 0);
-    __LCD_SetDigitalTube(3, hour % 10, 0);
-    __LCD_SetDigitalTube(4, minute / 10, 0);
-    __LCD_SetDigitalTube(5, minute % 10, 0);
+    else
+    {
+        __LCD_SetDigitalTube(2, (hour / 10) == 0 ? 10 : hour / 10, 0);
+        __LCD_SetDigitalTube(3, hour % 10, 0);
+        __LCD_SetDigitalTube(4, minute / 10, 0);
+        __LCD_SetDigitalTube(5, minute % 10, 0);
+        return;
+    }
 }
 
 void LCD_SetBatteryLevel(int8 level)
@@ -550,7 +608,15 @@ void LCD_SetStateLabels(u8 stateBitmask)
 
 void LCD_SetTemperature(int16 num)
 {
-    if (num < -550 || num > 1250)
+    if(num == LCD_TEMPERATURE_EMPTY)
+    {
+        __LCD_SetDigitalTube(6, 10, 0);
+        __LCD_SetDigitalTube(7, 10, 0);
+        __LCD_SetDigitalTube(8, 10, 0);
+        __LCD_SetDigitalTube(9, 10, 0);
+        return;
+    }
+    else if(num < -550 || num > 1250)
     {
         __LCD_SetDigitalTube(6, 12, 1);
         __LCD_SetDigitalTube(7, 13, 1);
@@ -560,12 +626,12 @@ void LCD_SetTemperature(int16 num)
     }
     else
     {
-        if (num < 0)
+        if(num < 0)
         {
             idata u8 d1 = (-num) / 100;
             idata u8 d2 = ((-num) / 10) % 10;
             idata u8 d3 = (-num) % 10;
-            if (d1)
+            if(d1)
             {
                 __LCD_SetDigitalTube(6, 11, 0);
                 __LCD_SetDigitalTube(7, d1, 0);
@@ -594,13 +660,21 @@ void LCD_SetTemperature(int16 num)
 
 void LCD_SetHumidity(u16 num)
 {
-    if (num > 9999)
+    if(num == 0xffff)
     {
         __LCD_SetDigitalTube(10, 12, 1);
         __LCD_SetDigitalTube(11, 13, 1);
         __LCD_SetDigitalTube(12, 13, 1);
         __LCD_SetDigitalTube(13, 10, 0);
-        printf("Invalid humidity, error 9999: %u\n", num);
+        printf("Invalid humidity");
+        return;
+    }
+    else if(num >= LCD_HUMIDITY_EMPTY)
+    {
+        __LCD_SetDigitalTube(10, 10, 0);
+        __LCD_SetDigitalTube(11, 10, 0);
+        __LCD_SetDigitalTube(12, 10, 0);
+        __LCD_SetDigitalTube(13, 10, 0);
         return;
     }
     else
@@ -614,7 +688,7 @@ void LCD_SetHumidity(u16 num)
     }
 }
 
-void LCD_SetUnits(u8 unitBitmask)  // tested
+void LCD_SetUnits(u8 unitBitmask) // tested
 {
     __LCD_SET_SEG(__Celsius_ADDR__, __Celsius_BIT__, unitBitmask & 0x01);
     __LCD_SET_SEG(__LX_ADDR__, __LX_BIT__, unitBitmask & 0x02);

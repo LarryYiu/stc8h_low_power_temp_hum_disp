@@ -22,8 +22,7 @@
  * @param priority ADC interrupt priority, Priority_0, Priority_1, Priority_2,
  * Priority_3
  */
-void ADC_Config(u8 sampleDuty, bit csCtl, u8 csHold, u8 clkFreq,
-                bit resJustification, bit pwrOn, int8 priority);
+void ADC_Config(u8 sampleDuty, bit csCtl, u8 csHold, u8 clkFreq, bit resJustification, bit pwrOn, int8 priority);
 
 /**
  * @brief ADC average filter function, which will sort the data and drop the
@@ -44,4 +43,7 @@ float ADC_AverageFilter(u16* dat, u8 len, u8 dropNum);
  * the default settings for this project.
  */
 void ADC_Config_Common();
-#endif  // __ADC_H__
+
+void ADC_On();
+void ADC_Off();
+#endif // __ADC_H__

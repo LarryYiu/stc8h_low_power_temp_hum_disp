@@ -2,7 +2,6 @@
 #define __TOUCH_KEY_H__
 
 #include <stc8h.h>
-#include <stdio.h>
 
 #include "AppConfig.h"
 #include "Config.h"
@@ -13,57 +12,62 @@
 #include "STC8G_H_Switch.h"
 
 #define TK_MAX_CHANNEL \
-    16  // This is the maximum number of touch key channels supported by the
-        // hardware. The actual number of channels used can be configured using
-        // TK_CHANNEL_ENABLED.
+    16 // This is the maximum number of touch key channels supported by the
+       // hardware. The actual number of channels used can be configured using
+       // TK_CHANNEL_ENABLED.
 
 /**
  * MSB channel 15 ~ LSB channel 0, bit 0 ~ bit 15, 1 for enable, 0 for disable
  */
 #ifndef TK_CHANNEL_ENABLED
-#define TK_CHANNEL_ENABLED 0x70c0  //  0111 0000 1100 0000 (12 13 14 15)
-#endif                             // TK_CHANNEL_ENABLED
+#define TK_CHANNEL_ENABLED 0x70c0 //  0111 0000 1100 0000 (12 13 14 15)
+#endif                            // TK_CHANNEL_ENABLED
 
 #ifndef TK_CFG1
 #define TK_CFG1 (1 << 4) + 6
-#endif  // TK_CFG1
+#endif // TK_CFG1
 
 #ifndef TK_LOWPASS_ENABLED
 #define TK_LOWPASS_ENABLED FALSE
-#endif  // TK_LOWPASS_ENABLED
+#endif // TK_LOWPASS_ENABLED
 
 #ifndef TK_PRESS_THRESHOLD_MULTIPLIER
 #define TK_PRESS_THRESHOLD_MULTIPLIER 0.5F
-#endif  // TK_PRESS_THRESHOLD_MULTIPLIER
+#endif // TK_PRESS_THRESHOLD_MULTIPLIER
 
 #ifndef TK_UNPRESS_THRESHOLD_MULTIPLIER
 #define TK_UNPRESS_THRESHOLD_MULTIPLIER 0.666F
-#endif  // TK_UNPRESS_THRESHOLD_MULTIPLIER
+#endif // TK_UNPRESS_THRESHOLD_MULTIPLIER
 
 #ifndef TK_LONG_PRESS_THRESHOLD
 #define TK_LONG_PRESS_THRESHOLD 5
-#endif  // TK_LONG_PRESS_THRESHOLD
+#endif // TK_LONG_PRESS_THRESHOLD
 
 #ifndef TK_CONTINUOUS_PRESS_THRESHOLD
 #define TK_CONTINUOUS_PRESS_THRESHOLD 3
-#endif  // TK_CONTINUOUS_PRESS_THRESHOLD
+#endif // TK_CONTINUOUS_PRESS_THRESHOLD
 
 #ifndef TK_CLEAR_DURATION_DELAY
 #define TK_CLEAR_DURATION_DELAY 1
-#endif  // TK_CLEAR_DURATION_DELAY
+#endif // TK_CLEAR_DURATION_DELAY
 
 #ifndef TK_ALLOW_ZERO_FOLLOWING
 #define TK_ALLOW_ZERO_FOLLOWING TRUE
-#endif  // TK_ALLOW_ZERO_FOLLOWING
+#endif // TK_ALLOW_ZERO_FOLLOWING
 
 #ifndef TK_DEBUG
 #define TK_DEBUG TRUE
-#endif  // TK_DEBUG
+#endif // TK_DEBUG
 
 #ifndef TK_USE_PRIORITY
 #define TK_USE_PRIORITY FALSE
 #define TK_INTERRUPT_PRIORITY 0
-#endif  // TK_USE_PRIORITY
+#endif // TK_USE_PRIORITY
+
+#define TK1 0
+#define TK2 1
+#define TK3 4
+#define TK4 3
 
 /**
  * @brief TouchKey_t is a structure that holds the state and timing information
@@ -210,8 +214,12 @@ bit TouchKey_IsPressed(u8 channel);
  * callback function should take a single parameter of type u8, which can be
  * pressCount or key index.
  */
-void TouchKey_Event(u8 keyIndex, bit isReleaseTrigger,
-                    void (*onShortPress)(u8 pressCount),
+void TouchKey_Event(u8 keyIndex, bit isReleaseTrigger, void (*onShortPress)(u8 pressCount),
                     void (*onLongPress)(u8 pressCount));
 
-#endif  // __TOUCH_KEY_H__
+void TouchKey_Clear();
+
+void TouchKey_On();
+void TouchKey_Off();
+void TouchKey_Consume();
+#endif // __TOUCH_KEY_H__
